@@ -7,6 +7,7 @@
 <body>
 <script>
     let userLang = navigator.language || navigator.userLanguage;
+    console.log(window.location.pathname)
     fetch(window.location.pathname + '/' + userLang + "/index.html")
         .then(response => {
             if (response.ok) {
