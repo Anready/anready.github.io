@@ -1,11 +1,10 @@
 let userLang = navigator.language || navigator.userLanguage;
-console.log(window.location.pathname)
-fetch(window.location.pathname + '/' + userLang + "/index.html")
+fetch("https://anready.github.io/" + userLang + "/index.html")
     .then(response => {
         if (response.ok) {
-            window.location.replace(window.location.pathname + userLang)
+            window.location.replace("https://anready.github.io/" + userLang)
         } else {
-            window.location.replace(window.location.pathname + '/en')
+            window.location.replace("https://anready.github.io/en")
         }
     })
-    .catch(() => window.location.replace(window.location.pathname + '/en'));
+    .catch(() => window.location.replace("https://anready.github.io/en"));
