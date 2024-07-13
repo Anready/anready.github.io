@@ -2,21 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Anready</title>
 </head>
 <body>
-<script>
-    let userLang = navigator.language || navigator.userLanguage;
-    console.log(window.location.pathname)
-    fetch(window.location.pathname + '/' + userLang + "/index.html")
-        .then(response => {
-            if (response.ok) {
-                window.location.replace(window.location.pathname + userLang)
-            } else {
-                window.location.replace(window.location.pathname + '/en')
-            }
-        })
-        .catch(() => window.location.replace(window.location.pathname + '/en'));
-</script>
+<script src="js/start.js"></script>
 </body>
 </html>

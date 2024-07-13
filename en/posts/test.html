@@ -16,12 +16,33 @@
     </div>
 </div>
 <div class="post-container">
-    <div class="back"><</div>
+    <div class="back" id="back"><</div>
     <h1 class="post-theme">Hi</h1>
     <div class="divider"></div>
     <p>Hi, this is a test post</p>
+    <div id="markdown-output"></div>
 </div>
 <script src="../../js/post.js"></script>
 <script src="../../js/posts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    document.getElementById('markdown-output').innerHTML =
+        marked.parse(`**Introduction to Assembly Language: Close to the Hardware**
+\nAssembly language is a low-level programming language that provides direct control over a computer's processor. Unlike high-level languages such as Java or Python, assembly language offers direct access to resources and the ability to precisely control hardware components of a computer. Understanding assembly language is beneficial with knowledge of computer hardware architecture and how its components operate.
+\n**Key Principles of Assembly Language**
+\nAssembly language utilizes a set of instructions that directly correspond to commands that the processor can execute. These instructions manipulate processor registers and computer memory. Writing programs in assembly requires a good understanding of the target processor's architecture, as instructions can vary depending on the specific processor and its instruction set.
+\n**Advantages and Disadvantages**
+\nThe primary advantage of using assembly language is its high performance and precise control over hardware resources. Programs written in assembly can be very efficient and optimized. However, this programming language requires developers to have deep knowledge of hardware architecture, operating systems, and has a higher entry threshold compared to high-level languages.
+\n**Example of Assembly Code**
+\nBelow is a simple example of assembly code for the Intel x86 processor that performs addition of two numbers:
+\n\`\`\`assembly\nsection .text\nglobal _start ; entry point for program execution
+\n_start:\n; load values for addition into registers\nmov eax, 10 ; load the number 10 into register eax\nmov ebx, 20 ; load the number 20 into register ebx
+\n; perform addition operation\nadd eax, ebx ; add values of eax and ebx
+\n; terminate the program with exit code 0\nmov eax, 1   ; exit program code\nxor ebx, ebx ; clear ebx register\nint 0x80     ; invoke system call to exit the program\n\`\`\`
+\nThis example demonstrates a basic assembly program that loads two numbers into processor registers, performs addition, and terminates the program execution.
+\n**Conclusion**
+\nAssembly language is a powerful programming tool that allows developers to efficiently utilize computer resources. However, using assembly requires deep knowledge of hardware architecture and operating systems. In modern applications, it is often used for optimizing critical sections and developing low-level system software components.\n`);
+</script>
+
 </body>
 </html>
