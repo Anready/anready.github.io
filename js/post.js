@@ -1,40 +1,17 @@
-const postsContainer = document.getElementById('posts-container');
-
-let posters = postsEn
-if (window.location.pathname.includes("/ru")) {
-    posters = postsRu
-}
-
-posters.forEach(post => {
-    const postElement = document.createElement('div');
-    postElement.className = 'post0';
-    if (post.link) {
-        postElement.className = 'post';
-        postElement.addEventListener("click", function() {
-            window.location.href = post.link
-        });
-    }
-
-    const postTitle = document.createElement('h2');
-    postTitle.textContent = post.title;
-
-    const postContent = document.createElement('p');
-    postContent.textContent = post.content;
-
-    postElement.appendChild(postTitle);
-    postElement.appendChild(postContent);
-
-    postsContainer.appendChild(postElement);
-});
-
-
-let userLang = navigator.language || navigator.userLanguage;
 let currentPath = window.location.pathname;
 
 let pathSegments = currentPath.split('/');
-let languageCode = pathSegments[pathSegments.length - 2];
+let languageCode = pathSegments[pathSegments.length - 3];
 
-fetch(window.location.pathname.replace(languageCode, userLang) + "index.html")
+let back = document.getElementById("back");
+back.onclick = function() {
+    window.history.back();
+}
+
+let userLang = navigator.language || navigator.userLanguage;
+
+
+fetch(window.location.pathname.replace(languageCode, userLang))
     .then(response => {
         if (response.ok) {
             if (languageCode !== userLang) {
@@ -81,4 +58,3 @@ function getIdByLanguageName(languageName) {
     }
     return null;
 }
-

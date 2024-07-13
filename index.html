@@ -1,22 +1,21 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodersANX | Blog</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+    <title></title>
 </head>
 <body>
-<header>
-    <h1>CodersANX | Anready</h1>
-</header>
-<div class="container" id="posts-container"></div>
-<footer>
-    <a ></a>
-    <p>CodersANX © 2024</p>
-</footer>
-<script src="js/posts.js"></script>
-<script src="js/main.js"></script>
+<script>
+    let userLang = navigator.language || navigator.userLanguage;
+    fetch(window.location.pathname + '/' + userLang + "/index.html")
+        .then(response => {
+            if (response.ok) {
+                window.location.replace(window.location.pathname + userLang)
+            } else {
+                window.location.replace(window.location.pathname + '/en')
+            }
+        })
+        .catch(() => window.location.replace(window.location.pathname + '/en'));
+</script>
 </body>
 </html>
