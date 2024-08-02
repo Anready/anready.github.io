@@ -14,6 +14,7 @@ body {
     overflow-y: auto;
     position: fixed;
     top: 0;
+    border-radius: 0 20px 20px 0;
     left: 0;
     height: 100%;
     transform: translateX(-100%);
@@ -28,7 +29,6 @@ body {
 .main-content {
     flex: 1;
     padding: 20px;
-    background-color: #ecf0f1;
     overflow-y: auto;
     margin-left: 0; /* Убираем отступ на больших экранах */
     transition: margin-left 0.3s ease;
@@ -94,4 +94,31 @@ body {
     .sidebar {
         width: 80vw;
     }
+}
+
+.code-container {
+    background-color: #000000;
+    padding: 20px;
+    color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.copy-button {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.copy-button:hover {
+    background-color: #367a39;
+}
+
+code {
+    background-color: white;
+    border-radius: 10px;
 }

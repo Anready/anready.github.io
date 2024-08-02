@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCroissant | Setup</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+
+</head>
+<body>
+<button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+<div class="sidebar" id="sidebar-container"></div>
+<div class="main-content">
+    <div class="content-box">
+        <h1>Starting of using API of 'Croissant'</h1>
+        <h2>Installation of Croissant FM</h2>
+        <br>
+        <p>First of all make sure that you already have on your device (phone/tablet) Croissant FM. You can find it
+            in <a href="https://github.com/Anready/Croissant/releases/">GitHub Release</a>. After install of Croissant
+            FM
+            make sure that you give permission "Read external storage" (for android 10 or lower) or permission "Manage
+            external storage" (for android 11 or higher)</p>
+        <h2>Code</h2>
+        <h3>Adding Lines to the AndroidManifest.xml</h3>
+        <p>Please find your AndroidManifest.xml file, and add this lines:</p>
+        <div class="code-container">
+            AndroidManifest.xml
+            <pre><code id="code-block" class="code-block">
+&lt;queries&gt;
+    &lt;package android:name="com.anready.croissant" /&gt;
+    &lt;provider android:authorities="com.anready.croissant.files" /&gt;
+&lt;/queries&gt;
+            </code></pre>
+            <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
+        </div>
+        <br>
+        <p>Example of full AndroidManifest.xml</p>
+        <div class="code-container">
+            AndroidManifest.xml
+            <pre><code class="code-block">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android"&gt;
+
+    &lt;queries&gt;
+        &lt;package android:name="com.anready.croissant" /&gt;
+        &lt;provider android:authorities="com.anready.croissant.files" /&gt;
+    &lt;/queries&gt;
+
+    &lt;application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Croissant"&gt;
+        &lt;activity
+            android:name=".MainActivity"
+            android:exported="true"&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="android.intent.action.MAIN" /&gt;
+
+                &lt;category android:name="android.intent.category.LAUNCHER" /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+
+&lt;/manifest&gt;
+            </code></pre>
+        </div>
+        <br>
+        <p>That's it! Go to the <a href="permissions.html">next page</a></p>
+    </div>
+</div>
+<script src="../js/addCategory.js"></script>
+<script>
+    window.addEventListener('load', function () {
+        hljs.highlightAll();
+    });
+</script>
+</body>
+</html>

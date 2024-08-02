@@ -74,3 +74,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Вызов функции для первоначального применения стилей
     handleMediaQueryChange(mediaQuery);
 });
+
+function copyCode() {
+    const codeBlock = document.getElementById("code-block");
+    let range = document.createRange();
+    range.selectNode(codeBlock);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges()
+    document.getElementById("copy-button").textContent = "Code copied!";
+
+    setTimeout(function() {
+        document.getElementById("copy-button").textContent = "Copy code";
+    }, 2000);
+}
