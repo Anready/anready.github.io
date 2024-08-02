@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCroissant | List</title>
+    <title>DCroissant | Errors</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
@@ -15,26 +15,44 @@
     <div class="content-box">
         <h1>Handling Errors</h1>
         <br>
-        <p></p>
-        <p>This is just calling a new activity, because impossible to start activities from ContentProvider:</p>
+        <h2>Type of errors:</h2>
+        <ul>
+            <li>ERR_01: No permission to access external storage - Missing permissions for Croissant app</li>
+            <li>ERR_02: Incorrect path provided - Incorrect path of directory/file</li>
+            <li>ERR_03: Unknown command - You provide incorrect command</li>
+        </ul>
+        <h2>Method to catch error</h2>
+        <br>
+        <p>In page <a href="list.html">List</a> I already provided example how to catch errors, in this page I'll give
+        you it again.</p>
+        <p>This is just trying to get an error from JSONArray/Object by key 'error':</p>
         <div class="code-container">
             Kotlin
             <pre><code id="code-block" class="code-block">
-val intent = Intent()
-intent.setClassName(
-    "com.anready.croissant",
-    "com.anready.croissant.providers.OpenFile"
-)
-intent.putExtra("path", pathToFile) // pathToFile = "/DCIM/Camera/img.jpg"
-startActivity(intent)
+private fun error(jsonArray: JSONArray): Boolean {
+    try {
+        val error = jsonArray.getJSONObject(0)
+        error.getString("error")
+        return true
+    } catch (e: JSONException) {
+        return false
+    }
+}
+
+//......calling it from list or get permissions method...... \\
+val jsonArray = JSONArray(cursor.getString(dataIndex))
+if (error(jsonArray)) {
+    println("Error: " + jsonArray.getJSONObject(0).getString("error"))
+    return false
+}
             </code></pre>
             <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
         </div>
         <br>
-        <p>By calling this method: It will return Nothing (at least for now)</p>
+        <p>I think all is understandable</p>
 
         <br>
-        <p>That's it! Go to the <a href="errors.html">next page</a></p>
+        <p>That's it! Go to the <a href="../index.html">Start page</a></p>
     </div>
 </div>
 <script src="../js/addCategory.js"></script>

@@ -3,22 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCroissant | Permissions</title>
+    <title>DCroissant | Errors</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
-
 </head>
 <body>
 <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
 <div class="sidebar" id="sidebar-container"></div>
 <div class="main-content">
     <div class="content-box">
-        <h1>Getting permissions</h1>
+        <h1>Handling Errors</h1>
         <br>
-        <p>Let's find out if the Croissant app has permission to read (for Android 10 and below) and full file
-            management (for Android 11 and above).</p>
-        <p>This method will be return a status of permissions (is Croissant have it or no):</p>
+        <h2>Type of errors:</h2>
+        <ul>
+            <li>ERR_01: No permission to access external storage - Missing permissions for Croissant app</li>
+            <li>ERR_02: Incorrect path provided - Incorrect path of directory/file</li>
+            <li>ERR_03: Unknown command - You provide incorrect command</li>
+        </ul>
+        <h2>Method to catch error</h2>
+        <br>
+        <p>In page <a href="list.html">List</a> I already provided example how to catch errors, in this page I'll give
+        you it again.</p>
+        <p>This is just trying to get an error from JSONArray/Object by key 'error':</p>
         <div class="code-container">
             Java
             <pre><code id="code-block" class="code-block">
@@ -27,12 +34,10 @@ NOT YET
             <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
         </div>
         <br>
-        <p>By calling this method: checkPermission(this). It will return true or false, true means permissions have
-            been received, false means there are no permissions, and in the future you will receive error 01 when
-            calling the API (See the article Errors)</p>
+        <p>I think all is understandable</p>
 
         <br>
-        <p>That's it! Go to the <a href="list.html">next page</a></p>
+        <p>That's it! Go to the <a href="../index.html">Start page</a></p>
     </div>
 </div>
 <script src="../js/addCategory.js"></script>

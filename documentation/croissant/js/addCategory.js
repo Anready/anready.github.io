@@ -1,5 +1,5 @@
 function toggleVisibility(id) {
-    var element = document.getElementById(id);
+    const element = document.getElementById(id);
     if (element) {
         element.classList.toggle('hidden');
     }
@@ -14,9 +14,9 @@ function changeLocationTo(path) {
 }
 
 function toggleSidebar() {
-    var sidebar = document.querySelector('.sidebar');
-    var mainContent = document.querySelector('.main-content');
-    var screenWidth = window.innerWidth;
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    const screenWidth = window.innerWidth;
 
     // Переключение видимости боковой панели
     sidebar.classList.toggle('visible');
@@ -32,7 +32,8 @@ function toggleSidebar() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    var sidebarHTML = `
+    document.getElementById('sidebar-container').innerHTML = `
+        <div class="category" onclick="changeLocationTo('index.html')">Start</div>    
         <div class="category" onclick="toggleVisibility('cat1')">Java</div>
         <div id="cat1" class="hidden">
             <div class="subcategory" onclick="changeLocationTo('java/setup.html')">Set - Up</div>
@@ -50,15 +51,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="subcategory" onclick="changeLocationTo('kotlin/errors.html')">Receiving and handling errors</div>
         </div>
     `;
-    document.getElementById('sidebar-container').innerHTML = sidebarHTML;
 
-    // Создание медиазапроса для экранов шириной 650px и меньше
     const mediaQuery = window.matchMedia('(max-width: 650px)');
 
     // Функция для обработки изменения состояния медиазапроса
     function handleMediaQueryChange(e) {
-        var sidebar = document.querySelector('.sidebar');
-        var mainContent = document.querySelector('.main-content');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
 
         if (!e.matches) {
             // Если ширина экрана 650px или меньше

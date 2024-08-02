@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCroissant | Permissions</title>
+    <title>DCroissant | List</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
@@ -14,11 +14,12 @@
 <div class="sidebar" id="sidebar-container"></div>
 <div class="main-content">
     <div class="content-box">
-        <h1>Getting permissions</h1>
+        <h1>Getting List of Files/Folders</h1>
         <br>
-        <p>Let's find out if the Croissant app has permission to read (for Android 10 and below) and full file
-            management (for Android 11 and above).</p>
-        <p>This method will be return a status of permissions (is Croissant have it or no):</p>
+        <p>Let's find out how to get a list of folders and files by a specified path. The path doesn't need to be full; 
+            for example, instead of passing /storage/emulated/0/DCIM/Camera, you only pass /DCIM/Camera, 
+            and this applies EVERYWHERE.</p>
+        <p>This method will be return a JSONArray, but I changed it to MutableList:</p>
         <div class="code-container">
             Java
             <pre><code id="code-block" class="code-block">
@@ -27,12 +28,11 @@ NOT YET
             <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
         </div>
         <br>
-        <p>By calling this method: checkPermission(this). It will return true or false, true means permissions have
-            been received, false means there are no permissions, and in the future you will receive error 01 when
-            calling the API (See the article Errors)</p>
+        <p>By calling this method: getListOfObjects(this, "/"). It will return MutableList of DirectoryContents,
+            you can receive error code: 02 and 01 (See the article Errors). You can use this List as you wish</p>
 
         <br>
-        <p>That's it! Go to the <a href="list.html">next page</a></p>
+        <p>That's it! Go to the <a href="opening.html">next page</a></p>
     </div>
 </div>
 <script src="../js/addCategory.js"></script>
