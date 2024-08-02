@@ -6,7 +6,11 @@ function toggleVisibility(id) {
 }
 
 function changeLocationTo(path) {
-    window.location.href = path;
+    if (window.location.href.includes("/kotlin/") || window.location.href.includes("/java/")) {
+        window.location.href = "../" + path;
+    } else {
+        window.location.href = path;
+    }
 }
 
 function toggleSidebar() {

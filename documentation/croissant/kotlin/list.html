@@ -22,26 +22,45 @@
         <div class="code-container">
             Kotlin
             <pre><code id="code-block" class="code-block">
-private fun checkPermission(ac: Activity): Boolean {
+private fun getListOfObjects(ac: Activity): MutableList&lt;DirectoryContents> {
+    val act = ac as MainActivity
     val contentResolver: ContentResolver = ac.contentResolver
     val uri = Uri.parse("content://com.anready.croissant.files")
         .buildUpon()
-        .appendQueryParameter("command", "isPermissionsGranted") // Adding parameter command
-        .build()
+        .appendQueryParameter("path", act.path)
+        appendQueryParameter("command", "list")
+        build()
 
     var cursor: Cursor? = null
     try {
-            cursor = contentResolver.query(uri, null, null, null, null)
+        cursor = contentResolver.query(uri, null, null, null, null)
         if (cursor != null && cursor.moveToFirst()) {
             val dataIndex = cursor.getColumnIndex("response")
             if (dataIndex == -1) {
-                println("Error while getting data!")
-                return false
+                println("Data column not found")
+                return mutableListOf()
             }
 
             val jsonArray = JSONArray(cursor.getString(dataIndex))
-            val fileInfo = jsonArray.getJSONObject(0)
-            return fileInfo.getBoolean("result")
+            if (error(jsonArray)) { //Checking response on error
+                println("Error: " + jsonArray.getJSONObject(0).getString("error"))
+                return mutableListOf()
+            }
+
+            val fullList = mutableListOf&lt;DirectoryContents>()
+
+            for (i in 0 until jsonArray.length()) {
+                val fileInfo = jsonArray.getJSONObject(i)
+                fullList.add(
+                    DirectoryContents(
+                        name = fileInfo.getString("name"),
+                        isDirectory = fileInfo.getBoolean("type"),
+                        isHidden = fileInfo.getBoolean("visibility")
+                    )
+                )
+            }
+
+            return fullList
         } else {
             println("Error while getting data!")
         }
@@ -50,18 +69,30 @@ private fun checkPermission(ac: Activity): Boolean {
     } finally {
         cursor?.close()
     }
-    return false
+
+    return mutableListOf()
 }
+
+private fun error(jsonArray: JSONArray): Boolean { //Method of getting error
+    try {
+        val error = jsonArray.getJSONObject(0)
+        error.getString("error")
+        return true
+    } catch (e: JSONException) {
+        return false
+    }
+}
+// Also in another file with name DirectoryContents put this lines:
+class DirectoryContents(val name: String, val isDirectory: Boolean, val isHidden: Boolean)
             </code></pre>
             <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
         </div>
         <br>
-        <p>By calling this method: checkPermission(this). It will return true or false, true means permissions have
-            been received, false means there are no permissions, and in the future you will receive error 01 when
-            calling the API (See the article Errors)</p>
+        <p>By calling this method: getListOfObjects(this). It will return MutableList of DirectoryContents,
+            you can receive error code: 02 and 01 (See the article Errors). You can use this List as you wish</p>
 
         <br>
-        <p>That's it! Go to the <a href="list.html">next page</a></p>
+        <p>That's it! Go to the <a href="opening.html">next page</a></p>
     </div>
 </div>
 <script src="../js/addCategory.js"></script>
