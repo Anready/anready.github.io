@@ -22,7 +22,10 @@
         <div class="code-container">
             Java
             <pre><code id="code-block" class="code-block">
-NOT YET
+Intent intent = new Intent();
+intent.setClassName("com.anready.croissant", "com.anready.croissant.providers.OpenFile");
+intent.putExtra("path", pathToFile); // pathToFile = "/DCIM/Camera/img.jpg"
+startActivity(intent);
             </code></pre>
             <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
         </div>
