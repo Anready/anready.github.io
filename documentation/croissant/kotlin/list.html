@@ -16,19 +16,19 @@
     <div class="content-box">
         <h1>Getting permissions</h1>
         <br>
-        <p>Let's find out if the Croissant app has permission to read (for Android 10 and below) and full file
-            management (for Android 11 and above).</p>
-        <p>This method will be return a status of permissions (is Croissant have it or no):</p>
+        <p>Let's find out how to get a list of folders and files by a specified path. The path doesn't need to be full; 
+            for example, instead of passing /storage/emulated/0/DCIM/Camera, you only pass /DCIM/Camera, 
+            and this applies EVERYWHERE.</p>
+        <p>This method will be return a JSONArray, but I changed it to MutableList:</p>
         <div class="code-container">
             Kotlin
             <pre><code id="code-block" class="code-block">
-private fun getListOfObjects(ac: Activity): MutableList&lt;DirectoryContents> {
-    val act = ac as MainActivity
+private fun getListOfObjects(ac: Activity, path: String): MutableList&lt;DirectoryContents> {
     val contentResolver: ContentResolver = ac.contentResolver
     val uri = Uri.parse("content://com.anready.croissant.files")
         .buildUpon()
-        .appendQueryParameter("path", act.path)
-        appendQueryParameter("command", "list")
+        .appendQueryParameter("path", patb) // Providing path
+        appendQueryParameter("command", "list") // Set command to list
         build()
 
     var cursor: Cursor? = null
@@ -88,7 +88,7 @@ class DirectoryContents(val name: String, val isDirectory: Boolean, val isHidden
             <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
         </div>
         <br>
-        <p>By calling this method: getListOfObjects(this). It will return MutableList of DirectoryContents,
+        <p>By calling this method: getListOfObjects(this, "/"). It will return MutableList of DirectoryContents,
             you can receive error code: 02 and 01 (See the article Errors). You can use this List as you wish</p>
 
         <br>
