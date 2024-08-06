@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="subcategory" onclick="changeLocationTo('java/permissions.html')">Checking Permissions</div>
             <div class="subcategory" onclick="changeLocationTo('java/list.html')">Getting List Of Files/Folders</div>
             <div class="subcategory" onclick="changeLocationTo('java/opening.html')">Opening files</div>
+            <div class="subcategory" onclick="changeLocationTo('java/isPathExist.html')">Is path exist</div>
             <div class="subcategory" onclick="changeLocationTo('java/errors.html')">Receiving and handling errors</div>
         </div>
         <div class="category" onclick="toggleVisibility('cat2')">Kotlin</div>
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="subcategory" onclick="changeLocationTo('kotlin/permissions.html')">Checking Permissions</div>
             <div class="subcategory" onclick="changeLocationTo('kotlin/list.html')">Getting List Of Files/Folders</div>
             <div class="subcategory" onclick="changeLocationTo('kotlin/opening.html')">Opening files</div>
+            <div class="subcategory" onclick="changeLocationTo('kotlin/isPathExist.html')">Is path exist</div>
             <div class="subcategory" onclick="changeLocationTo('kotlin/errors.html')">Receiving and handling errors</div>
         </div>
     `;

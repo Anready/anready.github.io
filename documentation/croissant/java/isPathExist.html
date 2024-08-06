@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCroissant | Is path exist</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+</head>
+<body>
+<button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+<div class="sidebar" id="sidebar-container"></div>
+<div class="main-content">
+    <div class="content-box">
+        <h1>Is path exist</h1>
+        <br>
+        <p>Checking for the existence of a path is one of the easiest tasks; you simply need to specify an incomplete
+            path to the directory. Example of a correct path: /DCIM/Camera. Incorrect path:
+            /storage/emulated/0/DCIM/Camera.</p>
+        <p>Simple:</p>
+        <div class="code-container">
+            Kotlin
+            <pre><code id="code-block" class="code-block">
+public static boolean isPathExist(Activity ac, String path) {
+    ContentResolver contentResolver = ac.getContentResolver();
+    Uri uri = Uri.parse("content://com.anready.croissant.files")
+            .buildUpon()
+            .appendQueryParameter("path", path)
+            .appendQueryParameter("command", "pathExist")
+            .build();
+
+    Cursor cursor = null;
+    try {
+        cursor = contentResolver.query(uri, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int dataIndex = cursor.getColumnIndex("response");
+            if (dataIndex == -1) {
+                System.out.println("Data column not found");
+                return false;
+            }
+
+            JSONArray jsonArray = new JSONArray(cursor.getString(dataIndex));
+            if (error(jsonArray)) {
+                System.out.println("Error: " + jsonArray.getJSONObject(0).getString("error"));
+                return false;
+            }
+
+            return jsonArray.getJSONObject(0).getBoolean("result");
+        } else {
+            System.out.println("Error while getting data!");
+        }
+    } catch (Exception e) {
+        System.out.println("Error while getting data!\n" + e.getMessage());
+    } finally {
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+    return false;
+}
+
+private boolean error(JSONArray jsonArray) {
+    try {
+        JSONObject error = jsonArray.getJSONObject(0);
+        error.getString("error");
+        return true;
+    } catch (JSONException e) {
+        return false;
+    }
+}
+            </code></pre>
+            <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
+        </div>
+        <br>
+        <p>By calling isPathExist(this, "/DCIM/Camera"): It will return true (directory exist), false (directory not
+            exist), or ERR_01, view on page with errors</p>
+
+        <br>
+        <p>That's it! Go to the <a href="errors.html">next page</a></p>
+    </div>
+</div>
+<script src="../js/addCategory.js"></script>
+<script>
+    window.addEventListener('load', function () {
+        hljs.highlightAll();
+    });
+</script>
+</body>
+</html>
