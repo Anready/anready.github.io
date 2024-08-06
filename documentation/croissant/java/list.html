@@ -23,12 +23,81 @@
         <div class="code-container">
             Java
             <pre><code id="code-block" class="code-block">
-NOT YET (wait until 03.08.2024)
+private static List&lt;DirectoryContents> getListOfObjects(Activity ac) {
+    MainActivity act = (MainActivity) ac;
+    ContentResolver contentResolver = ac.getContentResolver();
+    Uri uri = Uri.parse("content://com.anready.croissant.files")
+           .buildUpon()
+           .appendQueryParameter("path", act.getPath())
+           .appendQueryParameter("command", "list")
+           .build();
+
+    Cursor cursor = null;
+    try {
+        cursor = contentResolver.query(uri, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int dataIndex = cursor.getColumnIndex("response");
+            if (dataIndex == -1) {
+                alertDialog(ac, "Data column not found");
+                return new ArrayList<>();
+            }
+
+            JSONArray jsonArray = new JSONArray(cursor.getString(dataIndex));
+            if (error(jsonArray)) {
+                System.out.println("Error: " + jsonArray.getJSONObject(0).getString("error"));
+                return new ArrayList<>();
+            }
+
+            List&lt;DirectoryContents> fullList = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject fileInfo = jsonArray.getJSONObject(i);
+                    fullList.add(new DirectoryContents(
+                    fileInfo.getString("name"),
+                    fileInfo.getBoolean("type"),
+                    fileInfo.getBoolean("visibility")
+                ));
+            }
+
+            return fullList;
+        } else {
+            System.out.println("Error while getting data!");
+        }
+    } catch (Exception e) {
+       System.out.println(ac, "Error while getting data!\n" + e.getMessage());
+    } finally {
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
+    return new ArrayList<>();
+}
+
+private static boolean error(JSONArray jsonArray) {
+    try {
+        jsonArray.getJSONObject(0).getString("error");
+        return true;
+    } catch (JSONException e) {
+        return false;
+    }
+}
+//..... in another class with name DirectoryContents \\
+public class DirectoryContents {
+    public final String name;
+    public final boolean isDirectory;
+    public final boolean isHidden;
+
+    public DirectoryContents(String s, boolean b, boolean b1) {
+        this.name = s;
+        this.isDirectory = b;
+        this.isHidden = b1;
+    }
+}
             </code></pre>
             <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
         </div>
         <br>
-        <p>By calling this method: getListOfObjects(this, "/"). It will return MutableList of DirectoryContents,
+        <p>By calling this method: getListOfObjects(this, "/"). It will return List of DirectoryContents,
             you can receive error code: 02 and 01 (See the article Errors). You can use this List as you wish</p>
 
         <br>

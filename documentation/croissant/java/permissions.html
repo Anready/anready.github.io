@@ -22,7 +22,37 @@
         <div class="code-container">
             Java
             <pre><code id="code-block" class="code-block">
-NOT YET (wait until 03.08.2024)
+private static boolean checkPermission(Activity ac) {
+    ContentResolver contentResolver = ac.getContentResolver();
+    Uri uri = Uri.parse("content://com.anready.croissant.files")
+            .buildUpon()
+            .appendQueryParameter("command", "isPermissionsGranted")
+            .build();
+
+    Cursor cursor = null;
+    try {
+        cursor = contentResolver.query(uri, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int dataIndex = cursor.getColumnIndex("response");
+            if (dataIndex == -1) {
+                System.out.println("Data column not found");
+                return false;
+            }
+
+            JSONArray jsonArray = new JSONArray(cursor.getString(dataIndex));
+            return jsonArray.getJSONObject(0).getBoolean("result");
+        } else {
+            System.out.println("Error while getting data!");
+        }
+    } catch (Exception e) {
+        System.out.println("Error while getting data!\n" + e.getMessage());
+    } finally {
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+    return false;
+}
             </code></pre>
             <button id="copy-button" class="copy-button" onclick="copyCode(this)">Copy code</button>
         </div>
