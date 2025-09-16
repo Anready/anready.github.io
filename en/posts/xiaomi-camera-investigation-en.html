@@ -1,0 +1,132 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xiaomi Hides the Camera Capabilities: An Investigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">Xiaomi Hides the Camera Capabilities: An Investigation</h1>
+            <p class="text-gray-600 mt-2">By Anready | September, 2025 | 4 min read</p>
+            <p class="text-gray-600">Published: September 14, 2025</p>
+            <p class="text-gray-600 mt-2">Original article (mine): <a href="https://medium.com/@anready/xiaomi-hides-the-camera-capabilities-an-investigation-f7b028be437c" class="text-blue-600 hover:underline">Xiaomi Hides the Camera Capabilities: An Investigation</a></p>
+        </header>
+
+        <section class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Introduction</h2>
+            <p class="text-gray-700 mb-4">Modern smartphones increasingly offer advanced camera systems, but their functionality can be limited not only by hardware but also by software. In this article, we investigate how Xiaomi restricts camera capabilities in the Redmi 13, which uses the same Samsung HM6 108MP sensor as the Redmi Note 13, yet lacks a PRO mode. Through analysis of the Camera2 API and experiments, we demonstrate how software limitations impact functionality and image quality, and propose potential solutions for users.</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">The Problem: Absence of PRO Mode in Redmi 13</h2>
+            <p class="text-gray-700 mb-4">The Redmi 13 and Redmi Note 13 are equipped with the same Samsung HM6 108MP camera sensor, which supports high-quality imaging and manual settings such as ISO, shutter speed, and white balance. However, the default camera app on the Redmi 13 lacks a PRO mode, which enables these manual controls, while the Redmi Note 13 includes it. This raises the question: are these limitations due to hardware or software?</p>
+            <p class="text-gray-700 mb-4">For clarity, here are the key specifications:</p>
+            <table class="w-full text-left border-collapse mb-4">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-2 border">Model</th>
+                        <th class="p-2 border">Sensor</th>
+                        <th class="p-2 border">PRO Mode</th>
+                        <th class="p-2 border">Max Shutter Speed (Official)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="p-2 border">Redmi 13</td>
+                        <td class="p-2 border">Samsung HM6</td>
+                        <td class="p-2 border">No</td>
+                        <td class="p-2 border">1 s</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border">Redmi Note 13</td>
+                        <td class="p-2 border">Samsung HM6</td>
+                        <td class="p-2 border">Yes</td>
+                        <td class="p-2 border">30 s</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-gray-700">References: <a href="#" class="text-blue-600 hover:underline">Xiaomi Redmi 13 review</a>, <a href="#" class="text-blue-600 hover:underline">Xiaomi Redmi Note 13 4G review</a></p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Verifying Camera2 API Support</h2>
+            <p class="text-gray-700 mb-4">To determine whether the Redmi 13’s camera supports PRO mode at the hardware level, we used the Camera2 Probe app, which analyzes the level of Camera2 API support. The results confirm that the Redmi 13’s camera supports the full Camera2 API (Level 3), including manual controls for ISO, shutter speed, focus, and white balance — everything required for a PRO mode.</p>
+            <p class="text-gray-700">This indicates that the absence of PRO mode in the Redmi 13’s default camera app is a software restriction, not a hardware limitation.</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Experiments with Third-Party Apps</h2>
+            <p class="text-gray-700 mb-4">To test our hypothesis, we installed a third-party camera app with PRO mode support (e.g., Open Camera) on the Redmi 13. The app successfully enabled manual controls, including ISO and shutter speed, confirming hardware compatibility. However, capturing images at the full 108MP resolution remained unavailable through third-party apps, likely due to API restrictions at the driver level.</p>
+            <p class="text-gray-700 mb-4">We also tested the maximum shutter speed via the Camera2 API. While the API officially reports a maximum of 1 second for the Redmi 13, bypassing this restriction programmatically allowed us to achieve a shutter speed of up to 30 seconds, matching the Redmi Note 13’s capabilities.</p>
+            <p class="text-gray-700">These experiments confirm that Xiaomi imposes software limitations on the Redmi 13’s camera, likely to differentiate it from higher-priced models like the Redmi Note 13.</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Possible Reasons and Implications</h2>
+            <p class="text-gray-700 mb-4">Software restrictions may be part of Xiaomi’s strategy to promote more expensive models, such as the Redmi Note 13, where PRO mode and other features are fully accessible. This allows the company to offer similar hardware across different price segments while varying functionality.</p>
+            <p class="text-gray-700">For users, this means the Redmi 13’s camera potential is underutilized. The lack of PRO mode limits creative control in challenging lighting conditions, and restricted access to 108MP resolution in third-party apps reduces flexibility.</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Solutions for Users</h2>
+            <ol class="list-decimal pl-6 text-gray-700">
+                <li class="mb-2"><strong>Using Third-Party Apps</strong>: Apps like Open Camera or GCam can bypass some restrictions and enable PRO mode. However, access to the full 108MP resolution may still be limited.</li>
+                <li class="mb-2"><strong>Custom ROMs</strong>: Installing custom firmware, such as LineageOS, may unlock additional camera features but requires technical expertise and voids the warranty.</li>
+                <li><strong>Developing a Custom App</strong>: For developers familiar with Java or Kotlin, creating a custom app using the Camera2 API can overcome limitations like the 1-second shutter speed cap. If this issue persists, refer to solutions 1 and 2.</li>
+            </ol>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Conclusion</h2>
+            <p class="text-gray-700 mb-4">Our investigation reveals that the Redmi 13’s Samsung HM6 camera sensor is fully capable of supporting PRO mode and other advanced features, but Xiaomi restricts these capabilities through software. This is evidenced by Camera2 API analysis and experiments with third-party apps. Such restrictions likely serve to differentiate models and promote higher-end devices.</p>
+            <p class="text-gray-700">We will continue exploring Xiaomi’s camera software limitations and work on solutions to unlock the full potential of devices like the Redmi 13. Stay tuned for updates!</p>
+        </section>
+
+        <footer class="mt-8 text-center text-gray-600">
+            <p>© 2025 Anready. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
