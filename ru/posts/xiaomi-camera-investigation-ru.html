@@ -1,0 +1,132 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xiaomi скрывает возможности камеры: исследование</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">Xiaomi скрывает возможности камеры: исследование</h1>
+            <p class="text-gray-600 mt-2">Автор: Anready | Сентябрь 2025 | 4 мин чтения</p>
+            <p class="text-gray-600">Опубликовано: 14 сентября 2025</p>
+            <p class="text-gray-600 mt-2">Оригинальная статья (моя): <a href="https://medium.com/@anready/xiaomi-hides-the-camera-capabilities-an-investigation-f7b028be437c" class="text-blue-600 hover:underline">Xiaomi Hides the Camera Capabilities: An Investigation</a></p>
+        </header>
+
+        <section class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Введение</h2>
+            <p class="text-gray-700 mb-4">Современные смартфоны предлагают всё более продвинутые системы камер, но их функциональность может быть ограничена не только аппаратным обеспечением, но и программным. В этой статье мы исследуем, как Xiaomi ограничивает возможности камеры в Redmi 13, который использует тот же сенсор Samsung HM6 108MP, что и Redmi Note 13, но не имеет режима PRO. Через анализ Camera2 API и эксперименты мы демонстрируем, как программные ограничения влияют на функциональность и качество изображений, и предлагаем возможные решения для пользователей.</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Проблема: отсутствие режима PRO в Redmi 13</h2>
+            <p class="text-gray-700 mb-4">Redmi 13 и Redmi Note 13 оснащены одинаковым сенсором камеры Samsung HM6 108MP, который поддерживает высококачественную съёмку и ручные настройки, такие как ISO, выдержка и баланс белого. Однако стандартное приложение камеры на Redmi 13 не имеет режима PRO, который позволяет использовать эти ручные настройки, в то время как Redmi Note 13 его включает. Это вызывает вопрос: связаны ли эти ограничения с аппаратным или программным обеспечением?</p>
+            <p class="text-gray-700 mb-4">Для ясности приведём ключевые характеристики:</p>
+            <table class="w-full text-left border-collapse mb-4">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-2 border">Модель</th>
+                        <th class="p-2 border">Сенсор</th>
+                        <th class="p-2 border">Режим PRO</th>
+                        <th class="p-2 border">Макс. выдержка (официально)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="p-2 border">Redmi 13</td>
+                        <td class="p-2 border">Samsung HM6</td>
+                        <td class="p-2 border">Нет</td>
+                        <td class="p-2 border">1 с</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border">Redmi Note 13</td>
+                        <td class="p-2 border">Samsung HM6</td>
+                        <td class="p-2 border">Да</td>
+                        <td class="p-2 border">30 с</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-gray-700">Ссылки: <a href="#" class="text-blue-600 hover:underline">Обзор Xiaomi Redmi 13</a>, <a href="#" class="text-blue-600 hover:underline">Обзор Xiaomi Redmi Note 13 4G</a></p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Проверка поддержки Camera2 API</h2>
+            <p class="text-gray-700 mb-4">Чтобы определить, поддерживает ли камера Redmi 13 режим PRO на аппаратном уровне, мы использовали приложение Camera2 Probe, которое анализирует уровень поддержки Camera2 API. Результаты подтверждают, что камера Redmi 13 поддерживает полный Camera2 API (уровень 3), включая ручные настройки ISO, выдержки, фокуса и баланса белого — всё, что необходимо для режима PRO.</p>
+            <p class="text-gray-700">Это указывает на то, что отсутствие режима PRO в стандартном приложении камеры Redmi 13 является программным ограничением, а не аппаратным.</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Эксперименты с сторонними приложениями</h2>
+            <p class="text-gray-700 mb-4">Для проверки нашей гипотезы мы установили стороннее приложение камеры с поддержкой режима PRO (например, Open Camera) на Redmi 13. Приложение успешно активировало ручные настройки, включая ISO и выдержку, подтверждая аппаратную совместимость. Однако съёмка изображений в полном разрешении 108MP осталась недоступной через сторонние приложения, вероятно, из-за ограничений API на уровне драйверов.</p>
+            <p class="text-gray-700 mb-4">Мы также протестировали максимальную выдержку через Camera2 API. Хотя API официально указывает максимум 1 секунда для Redmi 13, программный обход этого ограничения позволил достичь выдержки до 30 секунд, что соответствует возможностям Redmi Note 13.</p>
+            <p class="text-gray-700">Эти эксперименты подтверждают, что Xiaomi накладывает программные ограничения на камеру Redmi 13, вероятно, чтобы дифференцировать её от более дорогих моделей, таких как Redmi Note 13.</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Возможные причины и последствия</h2>
+            <p class="text-gray-700 mb-4">Программные ограничения могут быть частью стратегии Xiaomi для продвижения более дорогих моделей, таких как Redmi Note 13, где режим PRO и другие функции полностью доступны. Это позволяет компании предлагать одинаковое аппаратное обеспечение в разных ценовых сегментах, варьируя функциональность.</p>
+            <p class="text-gray-700">Для пользователей это означает, что потенциал камеры Redmi 13 используется не полностью. Отсутствие режима PRO ограничивает творческий контроль в сложных условиях освещения, а ограниченный доступ к разрешению 108MP в сторонних приложениях снижает гибкость.</p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Решения для пользователей</h2>
+            <ol class="list-decimal pl-6 text-gray-700">
+                <li class="mb-2"><strong>Использование сторонних приложений</strong>: Приложения, такие как Open Camera или GCam, могут обойти некоторые ограничения и активировать режим PRO. Однако доступ к полному разрешению 108MP может оставаться ограниченным.</li>
+                <li class="mb-2"><strong>Кастомные прошивки</strong>: Установка кастомной прошивки, например LineageOS, может разблокировать дополнительные функции камеры, но требует технических знаний и аннулирует гарантию.</li>
+                <li><strong>Разработка собственного приложения</strong>: Для разработчиков, знакомых с Java или Kotlin, создание собственного приложения с использованием Camera2 API может преодолеть ограничения, такие как лимит выдержки в 1 секунду. Если проблема сохраняется, обратитесь к решениям 1 и 2.</li>
+            </ol>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Заключение</h2>
+            <p class="text-gray-700 mb-4">Наше исследование показывает, что сенсор камеры Samsung HM6 в Redmi 13 полностью способен поддерживать режим PRO и другие продвинутые функции, но Xiaomi ограничивает эти возможности программно. Это подтверждается анализом Camera2 API и экспериментами со сторонними приложениями. Такие ограничения, вероятно, служат для дифференциации моделей и продвижения более дорогих устройств.</p>
+            <p class="text-gray-700">Мы продолжим исследовать программные ограничения камер Xiaomi и работать над решениями для раскрытия полного потенциала устройств, таких как Redmi 13. Следите за обновлениями!</p>
+        </section>
+
+        <footer class="mt-8 text-center text-gray-600">
+            <p>© 2025 Anready. Все права защищены.</p>
+        </footer>
+    </div>
+</body>
+</html>
